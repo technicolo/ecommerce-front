@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
     }
 
     const fullUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/Usuarios/login`
-    console.log('🔗 Conectando a backend en:', fullUrl)
+    
 
     const apiRes = await fetch(fullUrl, {
       method: 'POST',
@@ -25,13 +25,12 @@ export async function POST(req: NextRequest) {
     })
 
     const raw = await apiRes.text()
-    console.log('🧪 Respuesta cruda:', raw)
+    
 
     let data: any = {}
     try {
       data = JSON.parse(raw)
     } catch {
-      console.warn('⚠️ Respuesta no es JSON válido:', raw)
       data = { raw }
     }
 
@@ -50,6 +49,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (err) {
     console.error('❌ Error en login:', err)
-    return NextResponse.json({ message: 'Error interno del servidor' }, { status: 500 })
+    return NextResponse.json({ message: 'Error interno del servidor' } , { status: 500 })
   }
 }

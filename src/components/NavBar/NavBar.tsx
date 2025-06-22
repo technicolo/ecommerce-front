@@ -1,17 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const router = useRouter()
+type Props = {
+  isLoggedIn: boolean
+}
 
-  useEffect(() => {
-    // Revisa si existe la cookie manualmente desde JS (no es tan seguro como el server, pero útil para UI)
-    const hasCookie = document.cookie.includes('token=')
-    setIsLoggedIn(hasCookie)
-  }, [])
+export default function Navbar({ isLoggedIn }: Props) {
+  const router = useRouter()
 
   const handleLogout = async () => {
     await fetch('/api/auth/logout', {
@@ -24,6 +21,7 @@ export default function Navbar() {
   return (
     <nav style={{ padding: '1rem', background: '#f0f0f0', display: 'flex', justifyContent: 'space-between' }}>
       <span style={{ fontWeight: 'bold' }}>🛒 Mi E-commerce</span>
+      <Link href="/productos">Productos</Link>
 
       <div>
         {isLoggedIn ? (

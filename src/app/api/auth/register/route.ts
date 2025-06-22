@@ -16,8 +16,6 @@ export async function POST(req: NextRequest) {
     }
 
     const fullUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/Usuarios/registro`;
-    console.log("🔗 Registrando en backend:", fullUrl);
-    console.log("📦 Payload:", { name, email, password });
 
     const apiRes = await fetch(fullUrl, {
       method: "POST",
@@ -28,7 +26,6 @@ export async function POST(req: NextRequest) {
     });
 
     const raw = await apiRes.text();
-    console.log("🧪 Respuesta cruda:", raw);
 
     let data: any = {};
     try {

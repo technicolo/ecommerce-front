@@ -1,17 +1,26 @@
-import Navbar from '@/components/NavBar/NavBar'
-import './globals.css'
+// app/layout.tsx
+import Navbar from "@/components/NavBar/NavBar";
+import "./globals.css";
+import { cookies } from "next/headers";
 
 export const metadata = {
-  title: 'E-commerce App',
-}
+  title: "E-commerce App",
+};
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const token = (await cookies()).get("token")?.value;
+  const isLoggedIn = !!token;
+
   return (
     <html lang="es">
       <body>
-        <Navbar />
+        <Navbar isLoggedIn={isLoggedIn} />
         {children}
       </body>
     </html>
-  )
+  );
 }

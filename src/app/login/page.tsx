@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import styles from "./login.module.css";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -26,7 +27,7 @@ export default function LoginPage() {
         const data = await res.json();
         if (data?.message) errorMsg = data.message;
       } catch (err) {
-        // La respuesta no era JSON
+        console.error("Error al parsear respuesta:", err);
       }
 
       setError(errorMsg);
@@ -34,38 +35,34 @@ export default function LoginPage() {
   };
 
   return (
-    <main style={{ padding: "2rem" }}>
-      <h1>Iniciar sesión</h1>
-      <form onSubmit={handleSubmit}>
-        <input
-          type="email"
-          placeholder="Correo"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
-        <input
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        <button type="submit">Ingresar</button>
-      </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+   <main className={styles.container}>
+  <h1 className={styles.title}>Iniciar sesión</h1>
+  <form onSubmit={handleSubmit} className={styles.form}>
+    <input
+      className={styles.input}
+      type="email"
+      placeholder="Correo"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+      required
+    />
+    <input
+      className={styles.input}
+      type="password"
+      placeholder="Contraseña"
+      value={password}
+      onChange={(e) => setPassword(e.target.value)}
+      required
+    />
+    <button className={styles.button} type="submit">Ingresar</button>
+  </form>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+  {error && <p className={styles.error}>{error}</p>}
 
-      <p>
-        ¿No tenés cuenta?{" "}
-        <button
-          onClick={() => router.push("/register")}
-          style={{ color: "blue" }}
-        >
-          Registrarse
-        </button>
-      </p>
-    </main>
+  <div className={styles.registerLink}>
+    <p>¿No tenés cuenta?</p>
+    <button onClick={() => router.push("/register")}>Registrarse</button>
+  </div>
+</main>
   );
 }
