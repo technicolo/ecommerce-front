@@ -1,5 +1,5 @@
 // app/layout.tsx
-import Navbar from "@/components/NavBar/NavBar";
+import Navbar from "@/components/NavBar";
 import "./globals.css";
 import { cookies } from "next/headers";
 

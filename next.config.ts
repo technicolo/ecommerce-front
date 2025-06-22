@@ -1,10 +1,7 @@
-import type { NextConfig } from "next";
-
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  matcher: ["/((?!api|_next|static|favicon.ico).*)"],
+  reactStrictMode: true,
+  // otras opciones válidas si tenés
 };
 
 module.exports = nextConfig;
-
-
-export default nextConfig;

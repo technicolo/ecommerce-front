@@ -19,7 +19,7 @@ export default function LoginPage() {
     });
 
     if (res.ok) {
-      router.push("/");
+      router.push("/productos");
     } else {
       let errorMsg = "Login fallido";
 
@@ -35,34 +35,36 @@ export default function LoginPage() {
   };
 
   return (
-   <main className={styles.container}>
-  <h1 className={styles.title}>Iniciar sesión</h1>
-  <form onSubmit={handleSubmit} className={styles.form}>
-    <input
-      className={styles.input}
-      type="email"
-      placeholder="Correo"
-      value={email}
-      onChange={(e) => setEmail(e.target.value)}
-      required
-    />
-    <input
-      className={styles.input}
-      type="password"
-      placeholder="Contraseña"
-      value={password}
-      onChange={(e) => setPassword(e.target.value)}
-      required
-    />
-    <button className={styles.button} type="submit">Ingresar</button>
-  </form>
+    <main className={styles.container}>
+      <h1 className={styles.title}>Iniciar sesión</h1>
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <input
+          className={styles.input}
+          type="email"
+          placeholder="Correo"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+        <input
+          className={styles.input}
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+        <button className={styles.button} type="submit">
+          Ingresar
+        </button>
+      </form>
 
-  {error && <p className={styles.error}>{error}</p>}
+      {error && <p className={styles.error}>{error}</p>}
 
-  <div className={styles.registerLink}>
-    <p>¿No tenés cuenta?</p>
-    <button onClick={() => router.push("/register")}>Registrarse</button>
-  </div>
-</main>
+      <div className={styles.registerLink}>
+        <p>¿No tenés cuenta?</p>
+        <button onClick={() => router.push("/productos")}>Registrarse</button>
+      </div>
+    </main>
   );
 }

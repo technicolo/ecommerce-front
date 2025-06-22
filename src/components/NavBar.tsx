@@ -22,7 +22,7 @@ export default function Navbar({ isLoggedIn }: Props) {
     <nav style={{ padding: '1rem', background: '#f0f0f0', display: 'flex', justifyContent: 'space-between' }}>
       <span style={{ fontWeight: 'bold' }}>🛒 Mi E-commerce</span>
       <Link href="/productos">Productos</Link>
-
+      <Link href="/carrito">Carrito</Link>
       <div>
         {isLoggedIn ? (
           <button onClick={handleLogout} style={{ marginLeft: '1rem' }}>
