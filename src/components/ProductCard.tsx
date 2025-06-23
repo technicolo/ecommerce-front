@@ -16,13 +16,31 @@ interface Props {
 export default function ProductCard({ producto }: Props) {
   const router = useRouter();
 
-  const handleAgregarAlCarrito = () => {
-    // TODO: Guardar en almacenamiento local o backend
-    const carrito = JSON.parse(localStorage.getItem("carrito") || "[]");
-    const actualizado = [...carrito, producto];
-    localStorage.setItem("carrito", JSON.stringify(actualizado));
+  const handleAgregarAlCarrito = async () => {
+    try {
+      const res = await fetch("/api/carrito", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productoId: producto.id,
+          cantidad: 1,
+        }),
+      });
 
-    alert(`🛒 "${producto.nombre}" agregado al carrito.`);
+      const responseText = await res.text();
+
+      console.log("🔄 Estado HTTP:", res.status);
+      console.log("📩 Respuesta:", responseText);
+
+      if (!res.ok) throw new Error("Error al agregar al carrito");
+
+      alert(`🛒 "${producto.nombre}" agregado al carrito.`);
+    } catch (err) {
+      alert("❌ No se pudo agregar al carrito.");
+      console.error("🧨 Error en fetch:", err);
+    }
   };
 
   return (
