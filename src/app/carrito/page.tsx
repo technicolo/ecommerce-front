@@ -85,12 +85,33 @@ export default function CarritoPage() {
     localStorage.setItem("carrito", JSON.stringify(actualizado));
   };
 
-  const disminuirCantidad = (id: number) => {
-    const actualizado = carrito
-      .map((p) => (p.id === id ? { ...p, cantidad: p.cantidad - 1 } : p))
-      .filter((p) => p.cantidad > 0); // elimina si llega a 0
-    setCarrito(actualizado);
-    localStorage.setItem("carrito", JSON.stringify(actualizado));
+  const disminuirCantidad = async (id: number) => {
+    const producto = carrito.find((p) => p.id === id);
+    if (!producto) return;
+
+    if (producto.cantidad === 1) {
+      // Eliminar del backend
+      try {
+        const res = await fetch(`/api/carrito/${id}`, {
+          method: "DELETE",
+        });
+
+        if (!res.ok) throw new Error("Error al eliminar producto");
+
+        const actualizado = carrito.filter((p) => p.id !== id);
+        setCarrito(actualizado);
+        localStorage.setItem("carrito", JSON.stringify(actualizado));
+      } catch (err) {
+        alert("❌ No se pudo eliminar el producto.");
+        console.error(err);
+      }
+    } else {
+      const actualizado = carrito.map((p) =>
+        p.id === id ? { ...p, cantidad: p.cantidad - 1 } : p
+      );
+      setCarrito(actualizado);
+      localStorage.setItem("carrito", JSON.stringify(actualizado));
+    }
   };
 
   const eliminarProducto = async (productoId: number) => {

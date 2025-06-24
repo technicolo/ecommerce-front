@@ -1,6 +1,7 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
+import styles from './cssComponents/ProductCard.module.css';
 
 type Producto = {
   id: number;
@@ -29,11 +30,6 @@ export default function ProductCard({ producto }: Props) {
         }),
       });
 
-      const responseText = await res.text();
-
-      console.log("🔄 Estado HTTP:", res.status);
-      console.log("📩 Respuesta:", responseText);
-
       if (!res.ok) throw new Error("Error al agregar al carrito");
 
       alert(`🛒 "${producto.nombre}" agregado al carrito.`);
@@ -44,18 +40,13 @@ export default function ProductCard({ producto }: Props) {
   };
 
   return (
-    <div
-      style={{
-        border: "1px solid #ccc",
-        padding: "1rem",
-        borderRadius: "8px",
-        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-      }}
-    >
-      <h3>{producto.nombre}</h3>
-      <p>${producto.precio}</p>
-      {producto.descripcion && <small>{producto.descripcion}</small>}
-      <button style={{ marginTop: "1rem" }} onClick={handleAgregarAlCarrito}>
+    <div className={styles.card}>
+      <div>
+        <div className={styles.nombre}>{producto.nombre}</div>
+        <div className={styles.precio}>${producto.precio}</div>
+        {producto.descripcion && <div className={styles.descripcion}>{producto.descripcion}</div>}
+      </div>
+      <button className={styles.boton} onClick={handleAgregarAlCarrito}>
         Agregar al carrito
       </button>
     </div>

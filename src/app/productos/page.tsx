@@ -1,7 +1,7 @@
 import ProductCard from "@/components/ProductCard";
 import { withAuth } from "@/lib/withAuth";
 import { cookies } from "next/headers";
-
+import styles from "./productos.module.css";
 
 type Producto = {
   id: number;
@@ -23,9 +23,9 @@ export default withAuth(async function ProductosPage() {
   const productos: Producto[] = await res.json();
 
   return (
-    <main style={{ padding: "2rem" }}>
+    <main className={styles.main}>
       <h1>Productos disponibles</h1>
-      <div style={{ display: "grid", gap: "1rem", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))" }}>
+      <div className={styles.grid}>
         {productos.map((p) => (
           <ProductCard key={p.id} producto={p} />
         ))}
