@@ -6,7 +6,6 @@ import { fetchFromBackend } from "../utils/fetchFromBackend";
 export async function POST(req: NextRequest) {
   const body = await req.json();
   const token = req.cookies.get("token")?.value;
-
   const data = await fetchFromBackend("/api/carrito", {
     method: "POST",
     headers: {
@@ -20,7 +19,6 @@ export async function POST(req: NextRequest) {
 
 export async function GET(req: NextRequest) {
   const token = req.cookies.get("token")?.value;
-
   const data = await fetchFromBackend("/api/carrito", {
     headers: {
       Authorization: `Bearer ${token}`,

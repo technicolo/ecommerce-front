@@ -24,6 +24,7 @@ export default function Navbar({ isLoggedIn }: Props) {
       <div className={styles.navLinks}>
         <Link href="/productos" className={styles.link}>Productos</Link>
         <Link href="/carrito" className={styles.link}>Carrito</Link>
+        <Link href="/perfil" className={styles.link}>Perfil</Link>
       </div>
       <div>
         {isLoggedIn ? (

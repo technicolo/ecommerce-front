@@ -63,7 +63,7 @@ export default function LoginPage() {
 
       <div className={styles.registerLink}>
         <p>¿No tenés cuenta?</p>
-        <button onClick={() => router.push("/productos")}>Registrarse</button>
+        <button onClick={() => router.push("/register")}>Registrarse</button>
       </div>
     </main>
   );

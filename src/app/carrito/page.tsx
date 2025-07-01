@@ -1,6 +1,10 @@
 "use client";
 
+import { withAuthClient } from "@/lib/withAuthClient";
 import { useEffect, useState } from "react";
+import styles from "./carrito.module.css";
+import ConfirmModal from "@/components/modals/confirmModal/ConfirmModal";
+
 
 type Producto = {
   id: number;
@@ -10,14 +14,25 @@ type Producto = {
   cantidad: number;
 };
 
-export default function CarritoPage() {
+function CarritoPage() {
   const [carrito, setCarrito] = useState<Producto[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [onConfirmAction, setOnConfirmAction] = useState<() => void>(() => () => {});
 
   useEffect(() => {
     const obtenerCarrito = async () => {
       try {
-        const res = await fetch("/api/carrito", { method: "GET" });
-        if (!res.ok) throw new Error("Error al obtener el carrito");
+        const res = await fetch("/api/carrito", {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (!res.ok) {
+          const errData = await res.json();
+          throw new Error(errData.message || "Error desconocido al obtener el carrito");
+        }
+
         const data = await res.json();
 
         const normalizado = data.map((item: any) => ({
@@ -27,9 +42,10 @@ export default function CarritoPage() {
           precio: item.producto.precio,
           cantidad: item.cantidad,
         }));
+
         setCarrito(normalizado);
-      } catch (error) {
-        console.error("🧨 Error al cargar carrito desde backend:", error);
+      } catch (error: any) {
+        setError(error.message || "Error desconocido al cargar el carrito.");
       }
     };
 
@@ -41,9 +57,8 @@ export default function CarritoPage() {
     try {
       const res = await fetch("/api/ordenes", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           productos: carrito.map((p) => ({
             id: p.id,
@@ -60,20 +75,21 @@ export default function CarritoPage() {
         const data = await res.json();
         alert("❌ Error al procesar la orden: " + data.message);
       }
-    } catch (err) {
-      console.error(err);
+    } catch {
       alert("❌ Error al conectar con el servidor.");
     }
   };
 
   const vaciarCarrito = async () => {
     try {
-      const res = await fetch("/api/carrito/vaciar", { method: "DELETE" });
+      const res = await fetch("/api/carrito/vaciar", {
+        method: "DELETE",
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Error al vaciar el carrito");
       setCarrito([]);
-    } catch (err) {
+    } catch {
       alert("❌ No se pudo vaciar el carrito.");
-      console.error(err);
     }
   };
 
@@ -90,20 +106,15 @@ export default function CarritoPage() {
     if (!producto) return;
 
     if (producto.cantidad === 1) {
-      // Eliminar del backend
       try {
         const res = await fetch(`/api/carrito/${id}`, {
           method: "DELETE",
+          credentials: "include",
         });
-
         if (!res.ok) throw new Error("Error al eliminar producto");
-
-        const actualizado = carrito.filter((p) => p.id !== id);
-        setCarrito(actualizado);
-        localStorage.setItem("carrito", JSON.stringify(actualizado));
-      } catch (err) {
+        setCarrito(carrito.filter((p) => p.id !== id));
+      } catch {
         alert("❌ No se pudo eliminar el producto.");
-        console.error(err);
       }
     } else {
       const actualizado = carrito.map((p) =>
@@ -118,74 +129,81 @@ export default function CarritoPage() {
     try {
       const res = await fetch(`/api/carrito/${productoId}`, {
         method: "DELETE",
+        credentials: "include",
       });
-
       if (!res.ok) throw new Error("Error al eliminar producto");
-
       setCarrito(carrito.filter((p) => p.id !== productoId));
-    } catch (err) {
+    } catch {
       alert("❌ No se pudo eliminar el producto.");
-      console.error(err);
     }
+  };
+
+  const confirmar = (accion: () => void) => {
+    setOnConfirmAction(() => accion);
+    setModalOpen(true);
   };
 
   const total = carrito.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
 
   return (
-    <main style={{ padding: "2rem" }}>
-      <h1>🛒 Tu Carrito</h1>
+    <main className={styles.main}>
+      <div className={styles.container}>
+        <h1 className={styles.title}>🛒 Tu Carrito</h1>
 
-      {carrito.length === 0 ? (
-        <p>No hay productos en el carrito.</p>
-      ) : (
-        <>
-          <ul>
-            {carrito.map((p) => (
-              <li key={p.id} style={{ marginBottom: "1rem" }}>
-                {p.nombre} - ${p.precio} c/u
-                <br />
-                <button
-                  onClick={() => disminuirCantidad(p.id)}
-                  style={{ marginRight: "0.5rem" }}
-                >
-                  ➖
-                </button>
-                Cantidad: {p.cantidad}
-                <button
-                  onClick={() => aumentarCantidad(p.id)}
-                  style={{ marginLeft: "0.5rem" }}
-                >
-                  ➕
-                </button>
-                <br />
-                Subtotal: ${(p.precio * p.cantidad).toFixed(2)}
-                <br />
-                <button
-                  onClick={() => eliminarProducto(p.id)}
-                  style={{ marginTop: "0.5rem", color: "red" }}
-                >
-                  Eliminar
-                </button>
-              </li>
-            ))}
-          </ul>
-          <h3>Total: ${total}</h3>
-          <button
-            onClick={finalizarCompra}
-            style={{
-              marginTop: "1rem",
-              padding: "0.5rem 1rem",
-              backgroundColor: "green",
-              color: "white",
-              border: "none",
-              cursor: "pointer",
-            }}
-          >
-            Finalizar compra
-          </button>
-          <button onClick={vaciarCarrito}>Vaciar carrito</button>
-        </>
-      )}
+        {error && <p className={styles.error}>❌ {error}</p>}
+
+        {carrito.length === 0 && !error ? (
+          <p className={styles.empty}>No hay productos en el carrito.</p>
+        ) : (
+          <>
+            <ul className={styles.list}>
+              {carrito.map((p) => (
+                <li key={p.id} className={styles.item}>
+                  <h3>{p.nombre}</h3>
+                  <p>${p.precio} c/u</p>
+                  <div className={styles.controls}>
+                    <button onClick={() => disminuirCantidad(p.id)}>➖</button>
+                    <span>Cantidad: {p.cantidad}</span>
+                    <button onClick={() => aumentarCantidad(p.id)}>➕</button>
+                  </div>
+                  <p>Subtotal: ${(p.precio * p.cantidad).toFixed(2)}</p>
+                  <button
+                    className={styles.deleteBtn}
+                    onClick={() => confirmar(() => eliminarProducto(p.id))}
+                  >
+                    Eliminar
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <h3 className={styles.total}>Total: ${total}</h3>
+
+            <div className={styles.actions}>
+              <button
+                className={styles.finalizarBtn}
+                onClick={() => confirmar(finalizarCompra)}
+              >
+                Finalizar compra
+              </button>
+              <button className={styles.vaciarBtn} onClick={vaciarCarrito}>
+                Vaciar carrito
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+
+      <ConfirmModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={() => {
+          onConfirmAction();
+          setModalOpen(false);
+        }}
+      />
     </main>
   );
 }
+
+export default withAuthClient(CarritoPage);
