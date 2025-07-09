@@ -125,14 +125,14 @@ function CarritoPage() {
     }
   };
 
-  const eliminarProducto = async (productoId: number) => {
+  const eliminarProducto = async (id: number) => {
     try {
-      const res = await fetch(`/api/carrito/${productoId}`, {
+      const res = await fetch(`/api/carrito/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
       if (!res.ok) throw new Error("Error al eliminar producto");
-      setCarrito(carrito.filter((p) => p.id !== productoId));
+      setCarrito(carrito.filter((p) => p.id !== id));
     } catch {
       alert("❌ No se pudo eliminar el producto.");
     }

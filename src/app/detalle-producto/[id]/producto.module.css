@@ -1,0 +1,43 @@
+.contenedor {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #1a1a1a;
+  border-radius: 12px;
+  color: white;
+}
+
+.titulo {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.imagen {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.descripcion {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.precio {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #4caf50;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.cargando {
+  text-align: center;
+  margin-top: 2rem;
+}

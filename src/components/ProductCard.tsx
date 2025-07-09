@@ -39,16 +39,27 @@ export default function ProductCard({ producto }: Props) {
     }
   };
 
+  const handleVerDetalles = () => {
+    router.push(`/detalle-producto/${producto.id}`);
+  };
+
   return (
     <div className={styles.card}>
       <div>
         <div className={styles.nombre}>{producto.nombre}</div>
         <div className={styles.precio}>${producto.precio}</div>
-        {producto.descripcion && <div className={styles.descripcion}>{producto.descripcion}</div>}
+        {producto.descripcion && (
+          <div className={styles.descripcion}>{producto.descripcion}</div>
+        )}
       </div>
-      <button className={styles.boton} onClick={handleAgregarAlCarrito}>
-        Agregar al carrito
-      </button>
+      <div className={styles.botones}>
+        <button className={styles.boton} onClick={handleAgregarAlCarrito}>
+          Agregar al carrito
+        </button>
+        <button className={styles.botonSecundario} onClick={handleVerDetalles}>
+          Ver detalles
+        </button>
+      </div>
     </div>
   );
 }

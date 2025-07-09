@@ -13,8 +13,9 @@ export async function DELETE(
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
-    },
+    }, 
   });
 
   return NextResponse.json(data);
 }
+ 
