@@ -1,21 +1,27 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get("token");
+  const token = request.cookies.get("authTokens")?.value;
 
-  const { pathname } = request.nextUrl;
+  const protectedRoutes = ["/productos", "/carrito", "/perfil"];
+  const pathname = request.nextUrl.pathname;
 
-  const isPublic = pathname.startsWith("/login") || pathname.startsWith("/register");
+  const isProtected = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
 
-  if (!token && !isPublic) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+  if (isProtected && !token) {
+    return NextResponse.redirect(new URL("/login", request.url));
+  }
+
+  if (token && pathname === "/login") {
+    return NextResponse.redirect(new URL("/productos", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|favicon.ico).*)"],
+  matcher: ["/productos", "/carrito", "/perfil", "/login"],
 };

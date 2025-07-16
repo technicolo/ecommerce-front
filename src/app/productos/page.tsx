@@ -1,35 +1,33 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
-import { withAuth } from "@/lib/withAuth";
-import { cookies } from "next/headers";
-import styles from "./productos.module.css";
+import { obtenerProductos } from "@/services/ProductoServices";
+import { ProductoDTO } from "../interfaces/productoDTO";
 
-type Producto = {
-  id: number;
-  nombre: string;
-  precio: number;
-  descripcion?: string;
-};
+export default function ProductosPage() {
+  const [productos, setProductos] = useState<ProductoDTO[]>([]); 
 
-export default withAuth(async function ProductosPage() {
-  const token = (await cookies()).get("token")?.value;
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const data = await obtenerProductos();
+        setProductos(data);
+      } catch (error) {
+        console.error("Error al obtener productos:", error);
+      }
+    };
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/Producto`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    cache: "no-store",
-  });
-
-  const productos: Producto[] = await res.json();
+    fetchProductos();
+  }, []);
 
   return (
-    <main className={styles.main}>
-      <h1>Productos disponibles</h1>
-      <div className={styles.grid}>
+    <main>
+      <div>
         {productos.map((p) => (
           <ProductCard key={p.id} producto={p} />
         ))}
       </div>
     </main>
   );
-});
+}

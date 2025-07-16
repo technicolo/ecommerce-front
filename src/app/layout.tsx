@@ -1,25 +1,25 @@
 // app/layout.tsx
 import Navbar from "@/components/NavBar";
 import "./globals.css";
-import { cookies } from "next/headers";
+import { ReactNode } from "react";
+import AuthContextProvider from "./contexts/authContexts";
 
 export const metadata = {
   title: "E-commerce App",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  const token = (await cookies()).get("token")?.value;
-  const isLoggedIn = !!token;
-
   return (
     <html lang="es">
       <body>
-        <Navbar isLoggedIn={isLoggedIn} />
-        {children}
+        <AuthContextProvider>
+          <Navbar />
+          {children}
+        </AuthContextProvider>
       </body>
     </html>
   );

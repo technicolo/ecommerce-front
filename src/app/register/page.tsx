@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./register.module.css";
+import { useAuthContext } from "../contexts/authContexts";
+import { registrarUsuario } from "@/services/inOutServices";
 
 export default function RegisterPage() {
   const [nombre, setNombre] = useState("");
@@ -10,28 +12,31 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  const { login } = useAuthContext();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      body: JSON.stringify({ nombre, email, password }),
-    });
+    try {
+      const { ok, data } = await registrarUsuario(nombre, email, password);
 
-    if (res.ok) {
-      router.push("/login");
-    } else {
-      let errorMsg = "Registro fallido";
-
-      try {
-        const data = await res.json();
-        if (data?.message) errorMsg = data.message;
-      } catch (err) {
-        console.error("Error al parsear respuesta:", err);
+      if (!ok) {
+        setError(data.message || "Registro fallido");
+        return;
       }
 
-      setError(errorMsg);
+      if (data.token) {
+        login({
+          token: data.token,
+          refresh_token: data.refresh_token,
+        });
+        router.push("/productos");
+      } else {
+        router.push("/login");
+      }
+    } catch (err) {
+      console.error("Error inesperado:", err);
+      setError("Error inesperado");
     }
   };
 

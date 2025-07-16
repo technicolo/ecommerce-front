@@ -2,16 +2,11 @@
 
 import { useRouter } from 'next/navigation';
 import styles from './cssComponents/ProductCard.module.css';
-
-type Producto = {
-  id: number;
-  nombre: string;
-  precio: number;
-  descripcion?: string;
-};
+import { agregarAlCarrito } from '@/services/carritService';
+import { ProductoDTO } from '@/app/interfaces/productoDTO';
 
 interface Props {
-  producto: Producto;
+  producto: ProductoDTO;
 }
 
 export default function ProductCard({ producto }: Props) {
@@ -19,23 +14,11 @@ export default function ProductCard({ producto }: Props) {
 
   const handleAgregarAlCarrito = async () => {
     try {
-      const res = await fetch("/api/carrito", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          productoId: producto.id,
-          cantidad: 1,
-        }),
-      });
-
-      if (!res.ok) throw new Error("Error al agregar al carrito");
-
+      await agregarAlCarrito(producto.id, 1);
       alert(`🛒 "${producto.nombre}" agregado al carrito.`);
     } catch (err) {
       alert("❌ No se pudo agregar al carrito.");
-      console.error("🧨 Error en fetch:", err);
+      console.error("🧨 Error al agregar al carrito:", err);
     }
   };
 

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import styles from "./perfil.module.css";
-import { withAuthClient } from "@/lib/withAuthClient";
 
 function PerfilPage() {
   const [nombre, setNombre] = useState("");
@@ -162,5 +161,5 @@ function PerfilPage() {
   );
   
 }
-export default withAuthClient(PerfilPage);
+export default PerfilPage;
 
