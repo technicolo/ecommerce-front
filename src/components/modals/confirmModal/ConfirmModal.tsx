@@ -1,4 +1,3 @@
-// components/modals/ConfirmModal.tsx
 "use client";
 
 import styles from "./confirmModal.module.css";

@@ -1,41 +1,55 @@
 import axios from "axios";
 
-function getCookie(name: string): string | undefined {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(";").shift();
+// ✅ FUNCION CORREGIDA: extrae el token del objeto JSON de la cookie
+function getClientToken(): string | undefined {
+  if (typeof document === "undefined") return;
+
+  const raw = document.cookie
+    .split("; ")
+    .find((row) => row.startsWith("authTokens="));
+
+  if (!raw) return;
+
+  try {
+    const jsonString = decodeURIComponent(raw.split("=")[1]);
+    const parsed = JSON.parse(jsonString);
+    return parsed.token;
+  } catch (err) {
+    console.error("❌ Error al parsear cookie:", err);
+    return;
+  }
 }
 
-function getToken() {
-  return getCookie("authTokens"); // asegúrate que coincida con la cookie real
-}
+
 
 const axiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
   timeout: 10000,
-  withCredentials: true, 
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = getToken();
+    const token = getClientToken();
     if (token) {
-      config.headers["Authorization"] = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
   (error) => Promise.reject(error)
 );
 
+
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response) {
-      console.error("Error en la respuesta:", error.response.data);
+      console.error("❌ Response error:", error.response.data);
     } else if (error.request) {
-      console.error("No se recibió respuesta del servidor:", error.request);
+      console.error("❌ No response received:", error.request);
     } else {
-      console.error("Error en la configuración de la petición:", error.message);
+      console.error("❌ Request setup error:", error.message);
     }
     return Promise.reject(error);
   }

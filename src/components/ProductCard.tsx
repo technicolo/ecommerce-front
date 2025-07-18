@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import styles from './cssComponents/ProductCard.module.css';
-import { agregarAlCarrito } from '@/services/carritService';
-import { ProductoDTO } from '@/app/interfaces/productoDTO';
+import { useRouter } from "next/navigation";
+import styles from "./cssComponents/ProductCard.module.css";
+import { agregarAlCarrito } from "@/services/carritoService";
+import { ProductoDTO } from "@/app/interfaces/productoDTO";
+import { useState } from "react";
 
 interface Props {
   producto: ProductoDTO;
@@ -12,13 +13,18 @@ interface Props {
 export default function ProductCard({ producto }: Props) {
   const router = useRouter();
 
+  const [loading, setLoading] = useState(false);
+
   const handleAgregarAlCarrito = async () => {
+    setLoading(true);
     try {
       await agregarAlCarrito(producto.id, 1);
       alert(`🛒 "${producto.nombre}" agregado al carrito.`);
     } catch (err) {
       alert("❌ No se pudo agregar al carrito.");
       console.error("🧨 Error al agregar al carrito:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -36,8 +42,12 @@ export default function ProductCard({ producto }: Props) {
         )}
       </div>
       <div className={styles.botones}>
-        <button className={styles.boton} onClick={handleAgregarAlCarrito}>
-          Agregar al carrito
+        <button
+          className={styles.boton}
+          onClick={handleAgregarAlCarrito}
+          disabled={loading}
+        >
+          {loading ? "Agregando..." : "Agregar al carrito"}
         </button>
         <button className={styles.botonSecundario} onClick={handleVerDetalles}>
           Ver detalles

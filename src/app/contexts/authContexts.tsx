@@ -16,7 +16,7 @@ type AuthTokens = {
   refresh_token?: string;
 };
 
-const AUTH_TOKENS_KEY = "NEXT_JS_AUTH";
+const AUTH_TOKENS_KEY = "authTokens";
 
 type AuthContextType = {
   login: (tokens: AuthTokens) => void;

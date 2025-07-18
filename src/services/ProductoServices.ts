@@ -1,5 +1,6 @@
 import { ProductoDTO } from "@/app/interfaces/productoDTO";
-import axiosInstance from "./api";
+import axiosInstance from "../../axiosConfig";
+
 
 
 export async function obtenerProductos(): Promise<ProductoDTO[]> {

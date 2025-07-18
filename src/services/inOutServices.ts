@@ -1,6 +1,6 @@
 import Cookies from "js-cookie";
 
-const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/Usuarios`;
+const API_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/Usuarios`;
 
 export async function loginUsuario(email: string, password: string) {
   const response = await fetch(`${API_URL}/login`, {

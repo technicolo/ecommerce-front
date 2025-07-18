@@ -1,4 +1,5 @@
-// app/layout.tsx
+
+
 import Navbar from "@/components/NavBar";
 import "./globals.css";
 import { ReactNode } from "react";

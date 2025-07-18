@@ -25,10 +25,11 @@ export default function LoginPage() {
       }
 
       if (data.token) {
-        // 👇 Guardamos el token en cookies para que el middleware lo detecte
-        Cookies.set("authTokens", data.token, { expires: 7 });
+        login({
+          token: data.token,
+          refresh_token: data.refresh_token,
+        });
 
-        // (opcional) mantener el contexto también
         login({
           token: data.token,
           refresh_token: data.refresh_token,

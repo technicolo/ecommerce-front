@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
-import { obtenerProductos } from "@/services/ProductoServices";
+
 import { ProductoDTO } from "../interfaces/productoDTO";
+import { obtenerProductos } from "@/services/productoServices";
+
 
 export default function ProductosPage() {
   const [productos, setProductos] = useState<ProductoDTO[]>([]); 

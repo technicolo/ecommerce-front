@@ -5,4 +5,5 @@ export interface ProductoDTO {
   nombre: string;
   precio: number;
   descripcion?: string;
+  cantidad: number;
 }
